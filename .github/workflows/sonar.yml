@@ -1,0 +1,32 @@
+name: CI with SonarCloud SAST
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - run: npm install
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=saranshsingh214_Mini-Notes-App
+            -Dsonar.organization=likhitha-varma
+            -Dsonar.sources=.
+            -Dsonar.exclusions=node_modules/**,**/*.test.js,**/*.spec.js
